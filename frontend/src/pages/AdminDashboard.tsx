@@ -159,6 +159,7 @@ const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [fetchingData, setFetchingData] = useState(true);
   const [updatingAppId, setUpdatingAppId] = useState<string | null>(null);
+  const [updatingAppAction, setUpdatingAppAction] = useState<string | null>(null);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{
     isOpen: boolean;
@@ -337,7 +338,7 @@ const AdminDashboard: React.FC = () => {
     if (isAuthenticated) {
       loadDashboardData();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, activeTab]);
 
   // Search & Filter Appointments
   const loadFilteredAppointments = async () => {
@@ -461,6 +462,12 @@ const AdminDashboard: React.FC = () => {
   // Appointment Actions
   const handleUpdateAppStatus = async (id: string, status: 'Confirmed' | 'Completed' | 'Cancelled') => {
     setUpdatingAppId(id);
+    const actionMap = {
+      Confirmed: 'confirm',
+      Completed: 'complete',
+      Cancelled: 'cancel'
+    };
+    setUpdatingAppAction(actionMap[status] || null);
     try {
       const res = await appointmentsApi.updateStatus(id, status);
       if (res.success) {
@@ -471,6 +478,7 @@ const AdminDashboard: React.FC = () => {
       showNotification('error', err.response?.data?.message || 'Failed to update status');
     } finally {
       setUpdatingAppId(null);
+      setUpdatingAppAction(null);
     }
   };
 
@@ -482,6 +490,7 @@ const AdminDashboard: React.FC = () => {
       onConfirm: async () => {
         setDeleteLoading(true);
         setUpdatingAppId(id);
+        setUpdatingAppAction('delete');
         try {
           const res = await appointmentsApi.delete(id);
           if (res.success) {
@@ -492,6 +501,7 @@ const AdminDashboard: React.FC = () => {
           showNotification('error', err.response?.data?.message || 'Failed to delete appointment');
         } finally {
           setUpdatingAppId(null);
+          setUpdatingAppAction(null);
           setDeleteLoading(false);
           setDeleteConfirm(prev => ({ ...prev, isOpen: false }));
         }
@@ -1735,7 +1745,7 @@ const AdminDashboard: React.FC = () => {
                                         title="Confirm Appointment"
                                         className="action-icon-btn confirm"
                                       >
-                                        {updatingAppId === app._id ? <Loader2 size={14} className="spin-animation" /> : <Check size={14} />}
+                                        {updatingAppId === app._id && updatingAppAction === 'confirm' ? <Loader2 size={14} className="spin-animation" /> : <Check size={14} />}
                                       </button>
                                     )}
                                     {app.status === 'Confirmed' && (
@@ -1745,7 +1755,7 @@ const AdminDashboard: React.FC = () => {
                                         title="Mark Completed"
                                         className="action-icon-btn complete"
                                       >
-                                        {updatingAppId === app._id ? <Loader2 size={14} className="spin-animation" /> : <CheckCircle size={14} />}
+                                        {updatingAppId === app._id && updatingAppAction === 'complete' ? <Loader2 size={14} className="spin-animation" /> : <CheckCircle size={14} />}
                                       </button>
                                     )}
                                     {app.status !== 'Completed' && app.status !== 'Cancelled' && (
@@ -1755,7 +1765,7 @@ const AdminDashboard: React.FC = () => {
                                         title="Cancel Appointment"
                                         className="action-icon-btn cancel"
                                       >
-                                        {updatingAppId === app._id ? <Loader2 size={14} className="spin-animation" /> : <X size={14} />}
+                                        {updatingAppId === app._id && updatingAppAction === 'cancel' ? <Loader2 size={14} className="spin-animation" /> : <X size={14} />}
                                       </button>
                                     )}
                                     <button 
@@ -1764,7 +1774,7 @@ const AdminDashboard: React.FC = () => {
                                       title="Delete Appointment"
                                       className="action-icon-btn delete"
                                     >
-                                      {updatingAppId === app._id ? <Loader2 size={14} className="spin-animation" /> : <Trash2 size={14} />}
+                                      {updatingAppId === app._id && updatingAppAction === 'delete' ? <Loader2 size={14} className="spin-animation" /> : <Trash2 size={14} />}
                                     </button>
                                   </div>
                                 </td>

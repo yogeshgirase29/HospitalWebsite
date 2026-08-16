@@ -260,6 +260,16 @@ export const appointmentsApi = {
     document.body.appendChild(link);
     link.click();
     link.parentNode?.removeChild(link);
+  },
+  printPdf: async (id: string, config?: AxiosRequestConfig) => {
+    const response = await api.get(`/api/appointments/${id}/pdf`, {
+      responseType: 'blob',
+      showLoader: true,
+      ...config
+    });
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    window.open(url, '_blank');
   }
 };
 
