@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 // but we will expose a controller method to check auth and handle logout.
 const loginAdmin = (req, res) => {
   const token = jwt.sign(
-    { id: req.user._id, username: req.user.username, email: req.user.email },
+    { id: req.user._id, username: req.user.username, email: req.user.email, role: 'admin' },
     process.env.JWT_SECRET || 'hospitalSessionSecret123!',
     { expiresIn: '24h' }
   );
@@ -41,7 +41,7 @@ const logoutAdmin = (req, res, next) => {
 };
 
 const checkAuth = async (req, res) => {
-  if (req.isAuthenticated()) {
+  if (req.isAuthenticated() && req.user && req.user.constructor.modelName === 'Admin') {
     return res.status(200).json({
       success: true,
       authenticated: true,

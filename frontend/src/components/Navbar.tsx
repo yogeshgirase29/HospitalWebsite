@@ -211,13 +211,13 @@ export const Navbar: React.FC<NavbarProps> = ({ language, setLanguage, onOpenApp
                     gap: '4px',
                     zIndex: 1000
                   }}>
-                    <a href="/employee/login" style={{ padding: '8px', fontSize: '0.78rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600, borderRadius: '6px', transition: 'all 0.2s' }} className="portal-dropdown-item">
+                    <a href="/employee/login" target="_blank" rel="noopener noreferrer" style={{ padding: '8px', fontSize: '0.78rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600, borderRadius: '6px', transition: 'all 0.2s' }} className="portal-dropdown-item">
                       {language === 'en' ? 'Employee Portal' : 'कर्मचारी लॉगिन'}
                     </a>
-                    <a href="/compounder/login" style={{ padding: '8px', fontSize: '0.78rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600, borderRadius: '6px', transition: 'all 0.2s' }} className="portal-dropdown-item">
+                    <a href="/compounder/login" target="_blank" rel="noopener noreferrer" style={{ padding: '8px', fontSize: '0.78rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600, borderRadius: '6px', transition: 'all 0.2s' }} className="portal-dropdown-item">
                       {language === 'en' ? 'Compounder Portal' : 'कंपाउंडर लॉगिन'}
                     </a>
-                    <a href="/admin/login" style={{ padding: '8px', fontSize: '0.78rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600, borderRadius: '6px', transition: 'all 0.2s' }} className="portal-dropdown-item">
+                    <a href="/admin/login" target="_blank" rel="noopener noreferrer" style={{ padding: '8px', fontSize: '0.78rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600, borderRadius: '6px', transition: 'all 0.2s' }} className="portal-dropdown-item">
                       {language === 'en' ? 'Admin Dashboard' : 'प्रशासक लॉगिन'}
                     </a>
                   </div>
@@ -345,13 +345,13 @@ export const Navbar: React.FC<NavbarProps> = ({ language, setLanguage, onOpenApp
                 <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', paddingLeft: '4px' }}>
                   {language === 'en' ? 'STAFF AREA' : 'स्टाफ लॉगिन'}
                 </span>
-                <a href="/employee/login" onClick={() => setIsOpen(false)} style={{ padding: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600 }}>
+                <a href="/employee/login" target="_blank" rel="noopener noreferrer" onClick={() => setIsOpen(false)} style={{ padding: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600 }}>
                   {language === 'en' ? 'Employee Portal' : 'कर्मचारी लॉगिन'}
                 </a>
-                <a href="/compounder/login" onClick={() => setIsOpen(false)} style={{ padding: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600 }}>
+                <a href="/compounder/login" target="_blank" rel="noopener noreferrer" onClick={() => setIsOpen(false)} style={{ padding: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600 }}>
                   {language === 'en' ? 'Compounder Portal' : 'कंपाउंडर लॉगिन'}
                 </a>
-                <a href="/admin/login" onClick={() => setIsOpen(false)} style={{ padding: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600 }}>
+                <a href="/admin/login" target="_blank" rel="noopener noreferrer" onClick={() => setIsOpen(false)} style={{ padding: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600 }}>
                   {language === 'en' ? 'Admin Dashboard' : 'प्रशासक लॉगिन'}
                 </a>
               </div>

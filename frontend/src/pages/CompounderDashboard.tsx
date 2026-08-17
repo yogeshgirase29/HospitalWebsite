@@ -777,7 +777,7 @@ export const CompounderDashboard: React.FC = () => {
                             </span>
                           </td>
                           <td style={{ padding: '12px 8px' }}>
-                            {app.status !== 'Completed' && app.status !== 'Cancelled' ? (
+                            {app.status === 'Confirmed' ? (
                               <button
                                 onClick={() => {
                                   setSelectedApp(app);
@@ -799,8 +799,30 @@ export const CompounderDashboard: React.FC = () => {
                               >
                                 <DollarSign size={12} /> Generate Bill
                               </button>
+                            ) : app.status === 'Pending' ? (
+                              <button
+                                disabled
+                                style={{
+                                  background: '#f1f5f9',
+                                  color: '#94a3b8',
+                                  border: '1px solid #e2e8f0',
+                                  borderRadius: '8px',
+                                  padding: '6px 12px',
+                                  fontSize: '0.75rem',
+                                  fontWeight: 700,
+                                  cursor: 'not-allowed',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '4px'
+                                }}
+                                title="Awaiting Admin Confirmation / प्रशासक मंजुरी प्रलंबित"
+                              >
+                                <DollarSign size={12} /> Pending / प्रलंबित
+                              </button>
                             ) : (
-                              <span style={{ color: '#94a3b8', fontStyle: 'italic' }}>No action available</span>
+                              <span style={{ color: '#94a3b8', fontStyle: 'italic', fontSize: '0.75rem' }}>
+                                No action available / कोणतीही क्रिया नाही
+                              </span>
                             )}
                           </td>
                         </tr>

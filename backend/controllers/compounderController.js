@@ -239,6 +239,13 @@ const generateBill = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Reference appointment not found.' });
     }
 
+    if (appointmentObj.status !== 'Confirmed') {
+      return res.status(400).json({
+        success: false,
+        message: `Billing invoice can only be generated for confirmed appointments. Current status: ${appointmentObj.status}`
+      });
+    }
+
     // Check if a bill is already generated for this appointment
     const preExisting = await Bill.findOne({ appointment: appointmentId });
     if (preExisting) {

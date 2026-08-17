@@ -117,9 +117,9 @@ export const Footer: React.FC<FooterProps> = ({ language }) => {
               <a href="#doctors" onClick={(e) => { e.preventDefault(); handleLinkClick('#doctors'); }} className="footer-link">{t.navDoctors}</a>
               <div style={{ height: '4px' }} />
               <h5 style={{ color: 'var(--white)', fontSize: '0.82rem', fontWeight: 700, margin: '6px 0 0 0' }}>Portals</h5>
-              <a href="/employee/login" className="footer-link">{language === 'en' ? 'Employee Login' : 'कर्मचारी लॉगिन'}</a>
-              <a href="/compounder/login" className="footer-link">{language === 'en' ? 'Compounder Login' : 'कंपाउंडर लॉगिन'}</a>
-              <a href="/admin/login" className="footer-link">{language === 'en' ? 'Admin Portal' : 'प्रशासक लॉगिन'}</a>
+              <a href="/employee/login" target="_blank" rel="noopener noreferrer" className="footer-link">{language === 'en' ? 'Employee Login' : 'कर्मचारी लॉगिन'}</a>
+              <a href="/compounder/login" target="_blank" rel="noopener noreferrer" className="footer-link">{language === 'en' ? 'Compounder Login' : 'कंपाउंडर लॉगिन'}</a>
+              <a href="/admin/login" target="_blank" rel="noopener noreferrer" className="footer-link">{language === 'en' ? 'Admin Portal' : 'प्रशासक लॉगिन'}</a>
             </div>
           </div>
 
