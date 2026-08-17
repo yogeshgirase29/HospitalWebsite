@@ -193,6 +193,75 @@ const statsJoiSchema = Joi.object({
   emergencyStatus: Joi.string().required()
 });
 
+const employeeJoiSchema = Joi.object({
+  employeeId: Joi.string().required().messages({ 'string.empty': 'Employee ID is required' }),
+  firstName: Joi.string().required().messages({ 'string.empty': 'First name is required' }),
+  lastName: Joi.string().required().messages({ 'string.empty': 'Last name is required' }),
+  email: Joi.string().email().required().messages({
+    'string.empty': 'Email is required',
+    'string.email': 'Please enter a valid email address'
+  }),
+  mobile: Joi.string().pattern(/^[6-9]\d{9}$/).required().messages({
+    'string.empty': 'Mobile number is required',
+    'string.pattern.base': 'Please enter a valid 10-digit mobile number'
+  }),
+  designation: Joi.string().required().messages({ 'string.empty': 'Designation is required' }),
+  status: Joi.string().valid('Active', 'Inactive').default('Active'),
+  password: Joi.string().min(6).optional()
+});
+
+const compounderJoiSchema = Joi.object({
+  compounderId: Joi.string().required().messages({ 'string.empty': 'Compounder ID is required' }),
+  firstName: Joi.string().required().messages({ 'string.empty': 'First name is required' }),
+  lastName: Joi.string().required().messages({ 'string.empty': 'Last name is required' }),
+  email: Joi.string().email().required().messages({
+    'string.empty': 'Email is required',
+    'string.email': 'Please enter a valid email address'
+  }),
+  mobile: Joi.string().pattern(/^[6-9]\d{9}$/).required().messages({
+    'string.empty': 'Mobile number is required',
+    'string.pattern.base': 'Please enter a valid 10-digit mobile number'
+  }),
+  status: Joi.string().valid('Active', 'Inactive').default('Active'),
+  password: Joi.string().min(6).optional()
+});
+
+const patientJoiSchema = Joi.object({
+  firstName: Joi.string().required().messages({ 'string.empty': 'First name is required' }),
+  lastName: Joi.string().required().messages({ 'string.empty': 'Last name is required' }),
+  dateOfBirth: Joi.date().max('now').required().messages({ 'any.required': 'Date of birth is required' }),
+  age: Joi.number().min(0).max(120).required().messages({ 'any.required': 'Age is required' }),
+  gender: Joi.string().valid('Male', 'Female', 'Other').required().messages({ 'any.required': 'Gender is required' }),
+  mobile: Joi.string().pattern(/^[6-9]\d{9}$/).required().messages({
+    'string.empty': 'Mobile number is required',
+    'string.pattern.base': 'Please enter a valid 10-digit mobile number'
+  }),
+  email: Joi.string().email().allow('').optional(),
+  address: Joi.string().allow('').optional(),
+  city: Joi.string().allow('').optional(),
+  emergencyContact: Joi.string().allow('').optional()
+});
+
+const billJoiSchema = Joi.object({
+  appointmentId: Joi.string().required().messages({ 'string.empty': 'Appointment ID is required' }),
+  patientId: Joi.string().optional().allow(''),
+  patientName: Joi.string().required().messages({ 'string.empty': 'Patient name is required' }),
+  doctorName: Joi.string().required().messages({ 'string.empty': 'Doctor name is required' }),
+  departmentName: Joi.string().required().messages({ 'string.empty': 'Department name is required' }),
+  services: Joi.array().items(
+    Joi.object({
+      name: Joi.string().required().messages({ 'string.empty': 'Service name is required' }),
+      price: Joi.number().min(0).required().messages({ 'number.base': 'Price must be a number' })
+    })
+  ).min(1).required().messages({ 'array.min': 'At least one service is required' }),
+  subtotal: Joi.number().min(0).required(),
+  discount: Joi.number().min(0).default(0),
+  tax: Joi.number().min(0).default(0),
+  total: Joi.number().min(0).required(),
+  paymentStatus: Joi.string().valid('Paid', 'Unpaid', 'Partially Paid').default('Paid'),
+  paymentMode: Joi.string().valid('Cash', 'Card', 'UPI', 'Online').default('Cash')
+});
+
 module.exports = {
   doctorJoiSchema,
   departmentJoiSchema,
@@ -201,5 +270,9 @@ module.exports = {
   newsJoiSchema,
   testimonialJoiSchema,
   galleryJoiSchema,
-  statsJoiSchema
+  statsJoiSchema,
+  employeeJoiSchema,
+  compounderJoiSchema,
+  patientJoiSchema,
+  billJoiSchema
 };

@@ -18,9 +18,13 @@ const newsRoutes = require('./routes/newsRoutes');
 const testimonialRoutes = require('./routes/testimonialRoutes');
 const statsRoutes = require('./routes/statsRoutes');
 const galleryRoutes = require('./routes/galleryRoutes');
+const employeeRoutes = require('./routes/employeeRoutes');
+const compounderRoutes = require('./routes/compounderRoutes');
 
 // Import models for passport
 const Admin = require('./models/Admin');
+const Employee = require('./models/Employee');
+const Compounder = require('./models/Compounder');
 
 const app = express();
 
@@ -57,7 +61,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URL || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/hospitalDB',
+    mongoUrl: process.env.MONGODB_URI || process.env.MONGO_URL || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/hospitalDB',
     ttl: 14 * 24 * 60 * 60 // 14 days
   }),
   cookie: {
@@ -73,9 +77,36 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Passport Strategy Configuration using passport-local-mongoose
-passport.use(Admin.createStrategy());
-passport.serializeUser(Admin.serializeUser());
-passport.deserializeUser(Admin.deserializeUser());
+passport.use('admin-local', Admin.createStrategy());
+passport.use('employee-local', Employee.createStrategy());
+passport.use('compounder-local', Compounder.createStrategy());
+passport.use('local', Admin.createStrategy()); // default local strategy alias for admin
+
+passport.serializeUser((user, done) => {
+  let userType = 'Admin';
+  if (user.constructor.modelName === 'Employee') userType = 'Employee';
+  else if (user.constructor.modelName === 'Compounder') userType = 'Compounder';
+  done(null, { id: user.id, type: userType });
+});
+
+passport.deserializeUser(async (key, done) => {
+  try {
+    if (key.type === 'Admin') {
+      const user = await Admin.findById(key.id);
+      done(null, user);
+    } else if (key.type === 'Employee') {
+      const user = await Employee.findById(key.id);
+      done(null, user);
+    } else if (key.type === 'Compounder') {
+      const user = await Compounder.findById(key.id);
+      done(null, user);
+    } else {
+      done(new Error('Unknown user type'));
+    }
+  } catch (err) {
+    done(err);
+  }
+});
 
 // Mount API Routes
 app.use('/admin', adminRoutes);
@@ -87,6 +118,8 @@ app.use('/api/news', newsRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/gallery', galleryRoutes);
+app.use('/api/employees', employeeRoutes);
+app.use('/api/compounders', compounderRoutes);
 
 // Custom 404 handler for API routes
 app.use('/api', (req, res) => {

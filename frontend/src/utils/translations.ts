@@ -202,7 +202,23 @@ export const translations = {
     modalReportAnother: "Search Another Report",
     modalReportPrint: "Print",
     modalReportPdf: "Download PDF",
-    modalReportDownloaded: "Downloaded file mockup successfully!"
+    modalReportDownloaded: "Downloaded file mockup successfully!",
+    portalAdmin: "Admin Portal",
+    portalEmployee: "Employee Portal",
+    portalCompounder: "Compounder Portal",
+    portalCheckin: "Check In",
+    portalCheckout: "Check Out",
+    portalAttendanceHistory: "Attendance History",
+    portalTodayAttendance: "Today's Attendance",
+    portalGenerateBill: "Generate Bill",
+    portalPrintBill: "Print Bill",
+    portalAddPatient: "Add Patient",
+    portalPatientList: "Patient List",
+    portalBilling: "Billing",
+    portalPatients: "Patients",
+    portalAppointments: "Appointments",
+    portalDashboard: "Dashboard",
+    portalStatus: "Status"
   },
   mr: {
     // Global/Navbar
@@ -405,6 +421,22 @@ export const translations = {
     modalReportAnother: "दुसरा अहवाल शोधा",
     modalReportPrint: "प्रिंट करा",
     modalReportPdf: "पीडीएफ डाउनलोड",
-    modalReportDownloaded: "पावती डाउनलोड यशस्वी झाली!"
+    modalReportDownloaded: "पावती डाउनलोड यशस्वी झाली!",
+    portalAdmin: "प्रशासक पोर्टल",
+    portalEmployee: "कर्मचारी पोर्टल",
+    portalCompounder: "कंपाउंडर पोर्टल",
+    portalCheckin: "चेक इन करा",
+    portalCheckout: "चेक आउट करा",
+    portalAttendanceHistory: "हजेरी इतिहास",
+    portalTodayAttendance: "आजची हजेरी",
+    portalGenerateBill: "बिल बनवा",
+    portalPrintBill: "बिल प्रिंट करा",
+    portalAddPatient: "रुग्ण नोंदणी",
+    portalPatientList: "रुग्ण सूची",
+    portalBilling: "बिलिंग",
+    portalPatients: "रुग्ण",
+    portalAppointments: "अपॉइंटमेंट्स",
+    portalDashboard: "डॅशबोर्ड",
+    portalStatus: "स्थिती"
   }
 };

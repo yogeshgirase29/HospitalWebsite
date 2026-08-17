@@ -1,6 +1,6 @@
 const News = require('../models/News');
 const { newsJoiSchema } = require('../validations/schemas');
-const cloudinary = require('cloudinary').v2;
+const { deleteFromCloudinary } = require('../utils/cloudinaryHelper');
 
 // Get all news posts (Public/Admin)
 const getAllNews = async (req, res, next) => {
@@ -90,14 +90,8 @@ const updateNews = async (req, res, next) => {
     if (date) post.date = date;
 
     if (req.file) {
-      // Delete old image from Cloudinary
       if (post.image) {
-        try {
-          const publicId = post.image.split('/').pop().split('.')[0];
-          await cloudinary.uploader.destroy(`hospital-news/${publicId}`);
-        } catch (err) {
-          console.error('Failed to delete old news image:', err);
-        }
+        await deleteFromCloudinary(post.image);
       }
       post.image = req.file.path;
     }
@@ -121,14 +115,8 @@ const deleteNews = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'News post not found' });
     }
 
-    // Delete image from Cloudinary
     if (post.image) {
-      try {
-        const publicId = post.image.split('/').pop().split('.')[0];
-        await cloudinary.uploader.destroy(`hospital-news/${publicId}`);
-      } catch (err) {
-        console.error('Failed to delete news image:', err);
-      }
+      await deleteFromCloudinary(post.image);
     }
 
     await News.findByIdAndDelete(req.params.id);

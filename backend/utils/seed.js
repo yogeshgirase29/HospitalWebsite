@@ -12,7 +12,7 @@ const Stats = require('../models/Stats');
 const Contact = require('../models/Contact');
 const Appointment = require('../models/Appointment');
 
-const MONGO_URI = process.env.MONGO_URL || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/hospitalDB';
+const MONGO_URI = process.env.MONGODB_URI || process.env.MONGO_URL || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/hospitalDB';
 
 const seedData = async () => {
   try {

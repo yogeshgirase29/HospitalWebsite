@@ -1,6 +1,6 @@
 const Gallery = require('../models/Gallery');
 const { galleryJoiSchema } = require('../validations/schemas');
-const cloudinary = require('cloudinary').v2;
+const { deleteFromCloudinary } = require('../utils/cloudinaryHelper');
 
 // Get all gallery items (Public/Admin)
 const getAllGallery = async (req, res, next) => {
@@ -55,14 +55,8 @@ const deleteGallery = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Gallery item not found' });
     }
 
-    // Delete image from Cloudinary
     if (item.image) {
-      try {
-        const publicId = item.image.split('/').pop().split('.')[0];
-        await cloudinary.uploader.destroy(`hospital-gallery/${publicId}`);
-      } catch (err) {
-        console.error('Failed to delete gallery image:', err);
-      }
+      await deleteFromCloudinary(item.image);
     }
 
     await Gallery.findByIdAndDelete(req.params.id);
@@ -93,14 +87,8 @@ const updateGallery = async (req, res, next) => {
     item.category = category;
 
     if (req.file) {
-      // Delete old image from Cloudinary
       if (item.image) {
-        try {
-          const publicId = item.image.split('/').pop().split('.')[0];
-          await cloudinary.uploader.destroy(`hospital-gallery/${publicId}`);
-        } catch (err) {
-          console.error('Failed to delete old gallery image:', err);
-        }
+        await deleteFromCloudinary(item.image);
       }
       item.image = req.file.path;
     }

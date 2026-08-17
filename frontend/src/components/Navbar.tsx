@@ -14,6 +14,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ language, setLanguage, onOpenAppointment, onOpenStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showPortals, setShowPortals] = useState(false);
 
   const t = translations[language];
 
@@ -183,6 +184,45 @@ export const Navbar: React.FC<NavbarProps> = ({ language, setLanguage, onOpenApp
                 {language === 'en' ? 'Check Status' : 'अपॉइंटमेंट तपासा'}
               </button>
               
+              <div 
+                style={{ position: 'relative' }}
+                onMouseEnter={() => setShowPortals(true)}
+                onMouseLeave={() => setShowPortals(false)}
+              >
+                <button 
+                  className="btn btn-secondary" 
+                  style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+                >
+                  {language === 'en' ? 'Staff Portals' : 'स्टाफ लॉगिन'}
+                </button>
+                {showPortals && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    right: 0,
+                    width: '180px',
+                    background: 'white',
+                    border: '1px solid rgba(2, 132, 199, 0.15)',
+                    borderRadius: '10px',
+                    padding: '8px',
+                    boxShadow: 'var(--shadow-lg)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                    zIndex: 1000
+                  }}>
+                    <a href="/employee/login" style={{ padding: '8px', fontSize: '0.78rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600, borderRadius: '6px', transition: 'all 0.2s' }} className="portal-dropdown-item">
+                      {language === 'en' ? 'Employee Portal' : 'कर्मचारी लॉगिन'}
+                    </a>
+                    <a href="/compounder/login" style={{ padding: '8px', fontSize: '0.78rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600, borderRadius: '6px', transition: 'all 0.2s' }} className="portal-dropdown-item">
+                      {language === 'en' ? 'Compounder Portal' : 'कंपाउंडर लॉगिन'}
+                    </a>
+                    <a href="/admin/login" style={{ padding: '8px', fontSize: '0.78rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600, borderRadius: '6px', transition: 'all 0.2s' }} className="portal-dropdown-item">
+                      {language === 'en' ? 'Admin Dashboard' : 'प्रशासक लॉगिन'}
+                    </a>
+                  </div>
+                )}
+              </div>
 
               <button 
                 onClick={onOpenAppointment}
@@ -233,6 +273,13 @@ export const Navbar: React.FC<NavbarProps> = ({ language, setLanguage, onOpenApp
           .nav-link-item:hover {
             color: var(--med-blue) !important;
           }
+          .portal-dropdown-item {
+            display: block;
+          }
+          .portal-dropdown-item:hover {
+            background: #f0f9ff;
+            color: var(--med-blue) !important;
+          }
         `}</style>
       </nav>
 
@@ -254,7 +301,9 @@ export const Navbar: React.FC<NavbarProps> = ({ language, setLanguage, onOpenApp
               zIndex: 899,
               boxShadow: 'var(--shadow-lg)',
               borderBottom: '1px solid var(--border-muted)',
-              padding: '24px'
+              padding: '24px',
+              maxHeight: 'calc(100vh - 80px)',
+              overflowY: 'auto'
             }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -283,13 +332,28 @@ export const Navbar: React.FC<NavbarProps> = ({ language, setLanguage, onOpenApp
                 >
                   {language === 'en' ? 'Check Status' : 'अपॉइंटमेंट तपासा'}
                 </button>
-<button 
+                <button 
                   onClick={() => { setIsOpen(false); onOpenAppointment(); }}
                   className="btn btn-primary" 
                   style={{ width: '100%', padding: '10px' }}
                 >
                   {t.bookAppointment}
                 </button>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px', borderTop: '1px solid #f1f5f9', paddingTop: '12px' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', paddingLeft: '4px' }}>
+                  {language === 'en' ? 'STAFF AREA' : 'स्टाफ लॉगिन'}
+                </span>
+                <a href="/employee/login" onClick={() => setIsOpen(false)} style={{ padding: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600 }}>
+                  {language === 'en' ? 'Employee Portal' : 'कर्मचारी लॉगिन'}
+                </a>
+                <a href="/compounder/login" onClick={() => setIsOpen(false)} style={{ padding: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600 }}>
+                  {language === 'en' ? 'Compounder Portal' : 'कंपाउंडर लॉगिन'}
+                </a>
+                <a href="/admin/login" onClick={() => setIsOpen(false)} style={{ padding: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 600 }}>
+                  {language === 'en' ? 'Admin Dashboard' : 'प्रशासक लॉगिन'}
+                </a>
               </div>
             </div>
           </motion.div>

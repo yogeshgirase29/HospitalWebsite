@@ -1,6 +1,6 @@
 const Testimonial = require('../models/Testimonial');
 const { testimonialJoiSchema } = require('../validations/schemas');
-const cloudinary = require('cloudinary').v2;
+const { deleteFromCloudinary } = require('../utils/cloudinaryHelper');
 
 // Get all testimonials (Public/Admin)
 const getAllTestimonials = async (req, res, next) => {
@@ -78,14 +78,8 @@ const updateTestimonial = async (req, res, next) => {
     testimonial.rating = rating;
 
     if (req.file) {
-      // Delete old image from Cloudinary
       if (testimonial.image) {
-        try {
-          const publicId = testimonial.image.split('/').pop().split('.')[0];
-          await cloudinary.uploader.destroy(`hospital-testimonials/${publicId}`);
-        } catch (err) {
-          console.error('Failed to delete old testimonial image:', err);
-        }
+        await deleteFromCloudinary(testimonial.image);
       }
       testimonial.image = req.file.path;
     }
@@ -109,14 +103,8 @@ const deleteTestimonial = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Testimonial not found' });
     }
 
-    // Delete image from Cloudinary
     if (testimonial.image) {
-      try {
-        const publicId = testimonial.image.split('/').pop().split('.')[0];
-        await cloudinary.uploader.destroy(`hospital-testimonials/${publicId}`);
-      } catch (err) {
-        console.error('Failed to delete testimonial image:', err);
-      }
+      await deleteFromCloudinary(testimonial.image);
     }
 
     await Testimonial.findByIdAndDelete(req.params.id);

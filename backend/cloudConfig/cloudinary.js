@@ -7,10 +7,12 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+const baseFolder = process.env.CLOUDINARY_BASE_FOLDER || 'hospital-management';
+
 const doctorStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'hospital-doctors',
+    folder: `${baseFolder}/doctors`,
     allowed_formats: ['png', 'jpg', 'jpeg', 'webp'],
     transformation: [{ width: 400, height: 435, crop: 'fill' }] // Optimizing doctor profile image sizing
   }
@@ -19,7 +21,7 @@ const doctorStorage = new CloudinaryStorage({
 const departmentStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'hospital-departments',
+    folder: `${baseFolder}/departments`,
     allowed_formats: ['png', 'jpg', 'jpeg', 'webp']
   }
 });
@@ -27,7 +29,7 @@ const departmentStorage = new CloudinaryStorage({
 const galleryStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'hospital-gallery',
+    folder: `${baseFolder}/gallery`,
     allowed_formats: ['png', 'jpg', 'jpeg', 'webp']
   }
 });
@@ -35,7 +37,7 @@ const galleryStorage = new CloudinaryStorage({
 const newsStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'hospital-news',
+    folder: `${baseFolder}/news`,
     allowed_formats: ['png', 'jpg', 'jpeg', 'webp']
   }
 });
@@ -43,7 +45,7 @@ const newsStorage = new CloudinaryStorage({
 const testimonialStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'hospital-testimonials',
+    folder: `${baseFolder}/testimonials`,
     allowed_formats: ['png', 'jpg', 'jpeg', 'webp']
   }
 });

@@ -63,7 +63,10 @@ const api = axios.create({
 api.interceptors.request.use(
   config => {
     // Attach JWT token if present
-    const token = sessionStorage.getItem('adminToken');
+    const adminToken = sessionStorage.getItem('adminToken');
+    const employeeToken = sessionStorage.getItem('employeeToken');
+    const compounderToken = sessionStorage.getItem('compounderToken');
+    const token = adminToken || employeeToken || compounderToken;
     if (token) {
       if (!config.headers) {
         config.headers = {} as any;
@@ -381,6 +384,149 @@ export const contactsApi = {
   },
   delete: async (id: string) => {
     const response = await api.delete(`/api/contacts/${id}`);
+    return response.data;
+  }
+};
+
+// Employee API
+export const employeesApi = {
+  login: async (credentials: any) => {
+    const response = await api.post('/api/employees/login', credentials);
+    return response.data;
+  },
+  logout: async () => {
+    const response = await api.post('/api/employees/logout');
+    return response.data;
+  },
+  checkSession: async (config?: AxiosRequestConfig) => {
+    const response = await api.get('/api/employees/current-employee', config);
+    return response.data;
+  },
+  checkIn: async (data: any) => {
+    const response = await api.post('/api/employees/attendance/check-in', data);
+    return response.data;
+  },
+  checkOut: async (data: any) => {
+    const response = await api.post('/api/employees/attendance/check-out', data);
+    return response.data;
+  },
+  getHistory: async (config?: AxiosRequestConfig) => {
+    const response = await api.get('/api/employees/attendance/history', config);
+    return response.data;
+  }
+};
+
+// Compounder API
+export const compoundersApi = {
+  login: async (credentials: any) => {
+    const response = await api.post('/api/compounders/login', credentials);
+    return response.data;
+  },
+  logout: async () => {
+    const response = await api.post('/api/compounders/logout');
+    return response.data;
+  },
+  checkSession: async (config?: AxiosRequestConfig) => {
+    const response = await api.get('/api/compounders/current-compounder', config);
+    return response.data;
+  },
+  addPatient: async (data: any) => {
+    const response = await api.post('/api/compounders/patients', data);
+    return response.data;
+  },
+  getPatients: async (params?: { search?: string }) => {
+    const response = await api.get('/api/compounders/patients', { params });
+    return response.data;
+  },
+  getPatientById: async (id: string) => {
+    const response = await api.get(`/api/compounders/patients/${id}`);
+    return response.data;
+  },
+  getAppointments: async (params?: { search?: string; status?: string; date?: string }) => {
+    const response = await api.get('/api/compounders/appointments', { params });
+    return response.data;
+  },
+  generateBill: async (data: any) => {
+    const response = await api.post('/api/compounders/bills', data);
+    return response.data;
+  },
+  getBills: async (params?: { search?: string }) => {
+    const response = await api.get('/api/compounders/bills', { params });
+    return response.data;
+  },
+  getBillById: async (id: string) => {
+    const response = await api.get(`/api/compounders/bills/${id}`);
+    return response.data;
+  },
+  downloadBillPdf: async (id: string, billNumber: string) => {
+    const response = await api.get(`/api/compounders/bills/${id}/pdf`, {
+      responseType: 'blob',
+      showLoader: true
+    });
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `invoice_${billNumber}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode?.removeChild(link);
+  },
+  printBillPdf: async (id: string) => {
+    const response = await api.get(`/api/compounders/bills/${id}/pdf`, {
+      responseType: 'blob',
+      showLoader: true
+    });
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    window.open(url, '_blank');
+  }
+};
+
+// Admin Management API
+export const adminManagementApi = {
+  getEmployees: async (params?: { search?: string }) => {
+    const response = await api.get('/admin/employees', { params });
+    return response.data;
+  },
+  createEmployee: async (data: any) => {
+    const response = await api.post('/admin/employees', data);
+    return response.data;
+  },
+  updateEmployee: async (id: string, data: any) => {
+    const response = await api.put(`/admin/employees/${id}`, data);
+    return response.data;
+  },
+  toggleEmployeeStatus: async (id: string) => {
+    const response = await api.patch(`/admin/employees/${id}/status`);
+    return response.data;
+  },
+  getAttendance: async (params?: { date?: string; status?: string; employeeName?: string }) => {
+    const response = await api.get('/admin/attendance', { params });
+    return response.data;
+  },
+  getCompounders: async (params?: { search?: string }) => {
+    const response = await api.get('/admin/compounders', { params });
+    return response.data;
+  },
+  createCompounder: async (data: any) => {
+    const response = await api.post('/admin/compounders', data);
+    return response.data;
+  },
+  updateCompounder: async (id: string, data: any) => {
+    const response = await api.put(`/admin/compounders/${id}`, data);
+    return response.data;
+  },
+  toggleCompounderStatus: async (id: string) => {
+    const response = await api.patch(`/admin/compounders/${id}/status`);
+    return response.data;
+  },
+  getPatients: async (params?: { search?: string }) => {
+    const response = await api.get('/admin/patients', { params });
+    return response.data;
+  },
+  getBills: async (params?: { search?: string }) => {
+    const response = await api.get('/admin/bills', { params });
     return response.data;
   }
 };

@@ -734,7 +734,7 @@ const getAppointmentPdf = async (req, res, next) => {
     } else if (req.headers.origin) {
       frontendUrl = req.headers.origin;
     }
-    const qrContent = `${frontendUrl}/?statusId=${appointment.appointmentId}`;
+    const qrContent = `${frontendUrl}/appointment/validate/${appointment.appointmentId}`;
 
     // QR Code generation (on the right column)
     const qrBuffer = await QRCode.toBuffer(qrContent, { type: 'png', margin: 1, width: 80 });

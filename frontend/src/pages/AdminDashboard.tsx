@@ -58,6 +58,12 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getISTDateString, formatISTDate } from '../utils/dateUtils';
+import { AdminEmployees } from '../components/AdminEmployees';
+import { AdminAttendance } from '../components/AdminAttendance';
+import { AdminCompounders } from '../components/AdminCompounders';
+import { AdminPatients } from '../components/AdminPatients';
+import { AdminBilling } from '../components/AdminBilling';
+import { CreditCard, User } from 'lucide-react';
 
 const iconMap: Record<string, React.ComponentType<any>> = {
   Heart,
@@ -81,7 +87,7 @@ const getDeptIcon = (iconName: string) => {
   return iconMap[iconName] || Stethoscope;
 };
 
-type Tab = 'overview' | 'appointments' | 'schedule' | 'doctors' | 'departments' | 'news' | 'gallery' | 'testimonials' | 'enquiries' | 'stats';
+type Tab = 'overview' | 'appointments' | 'schedule' | 'doctors' | 'departments' | 'news' | 'gallery' | 'testimonials' | 'enquiries' | 'stats' | 'employees' | 'attendance' | 'compounders' | 'patients' | 'billing';
 
 interface DoctorType {
   _id: string;
@@ -136,7 +142,7 @@ const AdminDashboard: React.FC = () => {
   // Navigation & UI States
   const [activeTab, setActiveTab] = useState<Tab>(() => {
     const saved = localStorage.getItem('adminActiveTab') as Tab;
-    const validTabs: Tab[] = ['overview', 'appointments', 'schedule', 'doctors', 'departments', 'news', 'gallery', 'testimonials', 'enquiries', 'stats'];
+    const validTabs: Tab[] = ['overview', 'appointments', 'schedule', 'doctors', 'departments', 'news', 'gallery', 'testimonials', 'enquiries', 'stats', 'employees', 'attendance', 'compounders', 'patients', 'billing'];
     if (saved && validTabs.includes(saved)) {
       return saved;
     }
@@ -1278,6 +1284,31 @@ const AdminDashboard: React.FC = () => {
           <button onClick={() => setActiveTab('stats')} className={`sidebar-nav-btn ${activeTab === 'stats' ? 'active' : ''}`}>
             <BarChart3 size={16} />
             <span>Hospital Stats</span>
+          </button>
+
+          <button onClick={() => setActiveTab('employees')} className={`sidebar-nav-btn ${activeTab === 'employees' ? 'active' : ''}`}>
+            <Users size={16} />
+            <span>Employees</span>
+          </button>
+
+          <button onClick={() => setActiveTab('attendance')} className={`sidebar-nav-btn ${activeTab === 'attendance' ? 'active' : ''}`}>
+            <Clock size={16} />
+            <span>Attendance Logs</span>
+          </button>
+
+          <button onClick={() => setActiveTab('compounders')} className={`sidebar-nav-btn ${activeTab === 'compounders' ? 'active' : ''}`}>
+            <User size={16} />
+            <span>Compounders</span>
+          </button>
+
+          <button onClick={() => setActiveTab('patients')} className={`sidebar-nav-btn ${activeTab === 'patients' ? 'active' : ''}`}>
+            <Users size={16} />
+            <span>Patients Registry</span>
+          </button>
+
+          <button onClick={() => setActiveTab('billing')} className={`sidebar-nav-btn ${activeTab === 'billing' ? 'active' : ''}`}>
+            <CreditCard size={16} />
+            <span>Billing Register</span>
           </button>
         </nav>
 
@@ -2600,6 +2631,26 @@ const AdminDashboard: React.FC = () => {
                 </div>
               )}
             </div>
+          )}
+
+          {activeTab === 'employees' && (
+            <AdminEmployees />
+          )}
+
+          {activeTab === 'attendance' && (
+            <AdminAttendance />
+          )}
+
+          {activeTab === 'compounders' && (
+            <AdminCompounders />
+          )}
+
+          {activeTab === 'patients' && (
+            <AdminPatients />
+          )}
+
+          {activeTab === 'billing' && (
+            <AdminBilling />
           )}
         </main>
       </div>

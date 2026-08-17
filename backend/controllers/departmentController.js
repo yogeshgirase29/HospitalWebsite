@@ -1,5 +1,6 @@
 const Department = require('../models/Department');
 const { departmentJoiSchema } = require('../validations/schemas');
+const { deleteFromCloudinary } = require('../utils/cloudinaryHelper');
 
 // Get all departments
 const getAllDepartments = async (req, res, next) => {
@@ -115,13 +116,7 @@ const updateDepartment = async (req, res, next) => {
     // If new image is uploaded, update URL and delete old image from Cloudinary
     if (req.file) {
       if (department.image) {
-        try {
-          const publicId = department.image.split('/').pop().split('.')[0];
-          const cloudinary = require('cloudinary').v2;
-          await cloudinary.uploader.destroy(`hospital-departments/${publicId}`);
-        } catch (err) {
-          console.error('Failed to delete old department image:', err);
-        }
+        await deleteFromCloudinary(department.image);
       }
       department.image = req.file.path;
     }
@@ -148,13 +143,7 @@ const deleteDepartment = async (req, res, next) => {
 
     // Delete image from Cloudinary
     if (department.image) {
-      try {
-        const publicId = department.image.split('/').pop().split('.')[0];
-        const cloudinary = require('cloudinary').v2;
-        await cloudinary.uploader.destroy(`hospital-departments/${publicId}`);
-      } catch (err) {
-        console.error('Failed to delete department image from Cloudinary:', err);
-      }
+      await deleteFromCloudinary(department.image);
     }
 
     await Department.findByIdAndDelete(req.params.id);

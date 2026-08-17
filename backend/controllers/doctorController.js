@@ -1,6 +1,6 @@
 const Doctor = require('../models/Doctor');
 const { doctorJoiSchema } = require('../validations/schemas');
-const cloudinary = require('cloudinary').v2;
+const { deleteFromCloudinary } = require('../utils/cloudinaryHelper');
 
 // Get all doctors.
 // Public users get only available doctors (?available=true).
@@ -121,14 +121,8 @@ const updateDoctor = async (req, res, next) => {
 
     // If new image is uploaded, update URL and optionally delete old image from Cloudinary
     if (req.file) {
-      // Old image URL path parsing for deletion (optional but clean)
       if (doctor.image) {
-        try {
-          const publicId = doctor.image.split('/').pop().split('.')[0];
-          await cloudinary.uploader.destroy(`hospital-doctors/${publicId}`);
-        } catch (err) {
-          console.error('Failed to delete old image from Cloudinary:', err);
-        }
+        await deleteFromCloudinary(doctor.image);
       }
       doctor.image = req.file.path;
     }
@@ -153,14 +147,8 @@ const deleteDoctor = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Doctor not found' });
     }
 
-    // Delete image from Cloudinary
     if (doctor.image) {
-      try {
-        const publicId = doctor.image.split('/').pop().split('.')[0];
-        await cloudinary.uploader.destroy(`hospital-doctors/${publicId}`);
-      } catch (err) {
-        console.error('Failed to delete image from Cloudinary:', err);
-      }
+      await deleteFromCloudinary(doctor.image);
     }
 
     await Doctor.findByIdAndDelete(req.params.id);
