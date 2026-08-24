@@ -43,13 +43,16 @@ const {
   updateCompounder,
   toggleCompounderStatus,
   getAllPatientsForAdmin,
-  getAllBillsForAdmin
+  getAllBillsForAdmin,
+  resetEmployeePassword,
+  resetCompounderPassword
 } = require('../controllers/adminManagementController');
 
 router.get('/employees', isAdminAuthenticated, getAllEmployees);
 router.post('/employees', isAdminAuthenticated, createEmployee);
 router.put('/employees/:id', isAdminAuthenticated, updateEmployee);
 router.patch('/employees/:id/status', isAdminAuthenticated, toggleEmployeeStatus);
+router.post('/employees/:id/reset-password', isAdminAuthenticated, resetEmployeePassword);
 
 router.get('/attendance', isAdminAuthenticated, getAllAttendance);
 
@@ -57,6 +60,7 @@ router.get('/compounders', isAdminAuthenticated, getAllCompounders);
 router.post('/compounders', isAdminAuthenticated, createCompounder);
 router.put('/compounders/:id', isAdminAuthenticated, updateCompounder);
 router.patch('/compounders/:id/status', isAdminAuthenticated, toggleCompounderStatus);
+router.post('/compounders/:id/reset-password', isAdminAuthenticated, resetCompounderPassword);
 
 router.get('/patients', isAdminAuthenticated, getAllPatientsForAdmin);
 router.get('/bills', isAdminAuthenticated, getAllBillsForAdmin);

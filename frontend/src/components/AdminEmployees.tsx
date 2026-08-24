@@ -124,6 +124,26 @@ export const AdminEmployees: React.FC = () => {
     }
   };
 
+  const handleResetPassword = async (id: string) => {
+    if (!window.confirm('Are you sure you want to reset this employee\'s password to the default "y$1"?')) {
+      return;
+    }
+    try {
+      setLoading(true);
+      const res = await adminManagementApi.resetEmployeePassword(id);
+      if (res.success) {
+        showNotification('success', 'Employee password reset successfully to default: y$1');
+      } else {
+        showNotification('error', res.message || 'Failed to reset password');
+      }
+    } catch (e: any) {
+      console.error(e);
+      showNotification('error', e.response?.data?.message || 'Failed to reset password');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       
@@ -152,12 +172,52 @@ export const AdminEmployees: React.FC = () => {
         </div>
       )}
 
-      {/* Control Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ position: 'relative', width: '260px' }}>
-          <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }}>
-            <Search size={16} />
-          </span>
+      {/* HEADER SECTION */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        background: 'white',
+        padding: '20px 24px',
+        borderRadius: '16px',
+        border: '1px solid #e2e8f0'
+      }}>
+        <div>
+          <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#0f172a' }}>Employees Directory</h2>
+          <p style={{ margin: '4px 0 0 0', fontSize: '0.82rem', color: '#64748b' }}>Manage staff access, roles, and status</p>
+        </div>
+        <button
+          onClick={handleOpenAdd}
+          style={{
+            background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '10px',
+            padding: '10px 16px',
+            fontSize: '0.82rem',
+            fontWeight: 700,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: '0 4px 12px rgba(2, 132, 199, 0.2)'
+          }}
+        >
+          <Plus size={16} /> Add Employee
+        </button>
+      </div>
+
+      {/* FILTER & SEARCH */}
+      <div style={{
+        background: 'white',
+        padding: '16px 20px',
+        borderRadius: '16px',
+        border: '1px solid #e2e8f0',
+        display: 'flex',
+        alignItems: 'center'
+      }}>
+        <div style={{ position: 'relative', width: '100%', maxWidth: '360px' }}>
+          <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
           <input
             type="text"
             placeholder="Search by ID, name, email..."
@@ -165,67 +225,52 @@ export const AdminEmployees: React.FC = () => {
             onChange={e => setSearch(e.target.value)}
             style={{
               width: '100%',
-              padding: '8px 10px 8px 32px',
+              padding: '8px 12px 8px 36px',
               border: '1px solid #cbd5e1',
-              borderRadius: '10px',
+              borderRadius: '8px',
               fontSize: '0.85rem',
               outline: 'none',
               boxSizing: 'border-box'
             }}
           />
         </div>
-
-        <button
-          onClick={handleOpenAdd}
-          style={{
-            background: 'var(--gradient-primary, linear-gradient(135deg, #0284c7 0%, #0369a1 100%))',
-            color: 'white',
-            border: 'none',
-            borderRadius: '10px',
-            padding: '8px 16px',
-            fontSize: '0.85rem',
-            fontWeight: 700,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px'
-          }}
-        >
-          <Plus size={16} /> Add Employee
-        </button>
       </div>
 
-      {/* List Table */}
-      <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+      {/* EMPLOYEES TABLE */}
+      <div style={{
+        background: 'white',
+        borderRadius: '16px',
+        border: '1px solid #e2e8f0',
+        overflow: 'hidden'
+      }}>
         {loading && employees.length === 0 ? (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
-            <Loader2 className="animate-spin text-sky-600" size={32} />
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}>
+            <Loader2 className="animate-spin" size={24} style={{ color: '#0284c7' }} />
           </div>
         ) : employees.length === 0 ? (
-          <div style={{ padding: '40px 0', textAlign: 'center', color: '#94a3b8' }}>
-            <ShieldAlert size={36} style={{ marginBottom: '8px' }} />
-            <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 600 }}>No employee records found.</p>
+          <div style={{ padding: '40px', textAlign: 'center', color: '#64748b', fontSize: '0.9rem' }}>
+            No employee records found.
           </div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid #e2e8f0', textAlign: 'left', color: '#64748b' }}>
-                  <th style={{ padding: '12px 8px', fontWeight: 700 }}>Employee ID</th>
+                  <th style={{ padding: '12px 16px', fontWeight: 700 }}>Employee ID</th>
                   <th style={{ padding: '12px 8px', fontWeight: 700 }}>Name</th>
                   <th style={{ padding: '12px 8px', fontWeight: 700 }}>Email</th>
                   <th style={{ padding: '12px 8px', fontWeight: 700 }}>Designation</th>
                   <th style={{ padding: '12px 8px', fontWeight: 700 }}>Status</th>
-                  <th style={{ padding: '12px 8px', fontWeight: 700 }}>Actions</th>
+                  <th style={{ padding: '12px 16px', fontWeight: 700 }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {employees.map(emp => (
                   <tr key={emp._id} style={{ borderBottom: '1px solid #f1f5f9', color: '#334155' }}>
-                    <td style={{ padding: '12px 8px', fontWeight: 700, color: '#0284c7' }}>{emp.employeeId}</td>
+                    <td style={{ padding: '12px 16px', fontWeight: 700, color: '#0284c7' }}>{emp.employeeId}</td>
                     <td style={{ padding: '12px 8px', fontWeight: 600 }}>{emp.firstName} {emp.lastName}</td>
                     <td style={{ padding: '12px 8px' }}>{emp.email}</td>
-                    <td style={{ padding: '12px 8px', fontWeight: 600 }}>{emp.designation}</td>
+                    <td style={{ padding: '12px 8px', fontWeight: 600, color: '#475569' }}>{emp.designation}</td>
                     <td style={{ padding: '12px 8px' }}>
                       <span style={{
                         padding: '3px 8px',
@@ -238,7 +283,7 @@ export const AdminEmployees: React.FC = () => {
                         {emp.status}
                       </span>
                     </td>
-                    <td style={{ padding: '12px 8px', display: 'flex', gap: '8px' }}>
+                    <td style={{ padding: '12px 16px', display: 'flex', gap: '8px', alignItems: 'center' }}>
                       <button
                         onClick={() => handleOpenEdit(emp)}
                         style={{
@@ -254,6 +299,25 @@ export const AdminEmployees: React.FC = () => {
                         title="Edit Details"
                       >
                         <Edit2 size={12} />
+                      </button>
+                      <button
+                        onClick={() => handleResetPassword(emp._id)}
+                        style={{
+                          background: 'none',
+                          border: '1px solid #cbd5e1',
+                          borderRadius: '6px',
+                          padding: '4px 8px',
+                          cursor: 'pointer',
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          color: '#0284c7',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px'
+                        }}
+                        title="Reset password to default (y$1)"
+                      >
+                        <ShieldAlert size={12} /> Reset PW
                       </button>
                       <button
                         onClick={() => handleToggleStatus(emp._id)}

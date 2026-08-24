@@ -34,6 +34,11 @@ export const EmployeeDashboard: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSubmitting, setPasswordSubmitting] = useState(false);
+
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
@@ -133,6 +138,36 @@ export const EmployeeDashboard: React.FC = () => {
     }
   };
 
+  const handleChangePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError(null);
+    
+    if (newPassword.length < 3) {
+      setPasswordError('Password must be at least 3 characters long / पासवर्ड किमान ३ अक्षरांचा असावा.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError('Passwords do not match / पासवर्ड जुळत नाहीत.');
+      return;
+    }
+
+    try {
+      setPasswordSubmitting(true);
+      const res = await employeesApi.changePassword({ newPassword });
+      if (res.success) {
+        setEmployee((prev: any) => ({ ...prev, mustChangePassword: false }));
+        setSuccess('Password updated successfully. Welcome to your dashboard! / पासवर्ड बदलला आहे.');
+      } else {
+        setPasswordError(res.message || 'Failed to update password');
+      }
+    } catch (err: any) {
+      console.error(err);
+      setPasswordError(err.response?.data?.message || 'Failed to update password');
+    } finally {
+      setPasswordSubmitting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div style={{
@@ -143,10 +178,108 @@ export const EmployeeDashboard: React.FC = () => {
         justifyContent: 'center',
         background: '#f8fafc'
       }}>
-        <Loader2 className="animate-spin text-sky-600" size={40} />
+        <Loader2 className="animate-spin text-sky-600 animate-spin-slow" size={40} style={{ color: '#0284c7' }} />
         <p style={{ marginTop: '16px', color: '#64748b', fontSize: '0.95rem', fontWeight: 600 }}>
           Loading your attendance panel...
         </p>
+      </div>
+    );
+  }
+
+  if (employee?.mustChangePassword) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+        padding: '24px',
+        fontFamily: "'Inter', sans-serif"
+      }}>
+        <div style={{
+          maxWidth: '440px',
+          width: '100%',
+          padding: '40px 32px',
+          background: 'white',
+          borderRadius: '24px',
+          border: '1px solid rgba(2, 132, 199, 0.18)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.08)',
+          boxSizing: 'border-box'
+        }}>
+          <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+            <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', margin: '0 0 8px 0' }}>
+              Set New Password / नवीन पासवर्ड सेट करा
+            </h2>
+            <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>
+              First login or password reset detected. Please choose a secure new password.
+            </p>
+          </div>
+          
+          {passwordError && (
+            <div style={{ padding: '12px 14px', background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '8px', color: '#991b1b', fontSize: '0.82rem', marginBottom: '16px' }}>
+              <span>{passwordError}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleChangePasswordSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>NEW PASSWORD / नवीन पासवर्ड</label>
+              <input
+                type="password"
+                required
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
+                style={{ padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '0.88rem', outline: 'none' }}
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>CONFIRM PASSWORD / पासवर्डची खात्री करा</label>
+              <input
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                style={{ padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '0.88rem', outline: 'none' }}
+              />
+            </div>
+            
+            <button
+              type="submit"
+              disabled={passwordSubmitting}
+              style={{
+                background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '10px',
+                padding: '12px',
+                fontSize: '0.88rem',
+                fontWeight: 700,
+                cursor: passwordSubmitting ? 'not-allowed' : 'pointer',
+                marginTop: '10px'
+              }}
+            >
+              {passwordSubmitting ? 'Updating...' : 'Update Password & Access'}
+            </button>
+            
+            <button
+              type="button"
+              onClick={handleLogout}
+              style={{
+                background: 'none',
+                color: '#64748b',
+                border: 'none',
+                fontSize: '0.82rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                textAlign: 'center',
+                textDecoration: 'underline'
+              }}
+            >
+              Cancel & Log Out
+            </button>
+          </form>
+        </div>
       </div>
     );
   }

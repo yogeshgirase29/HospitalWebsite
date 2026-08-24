@@ -13,7 +13,8 @@ const {
   generateBill,
   getBills,
   getBillById,
-  getBillPdf
+  getBillPdf,
+  changeCompounderPassword
 } = require('../controllers/compounderController');
 
 // Compounder Login
@@ -64,5 +65,8 @@ router.get('/bills/:id', isCompounderAuthenticated, getBillById);
 
 // Billing Invoice PDF Print (No strict authentication for window.open print compatibility, but targets valid IDs)
 router.get('/bills/:id/pdf', getBillPdf);
+
+// Password Change
+router.post('/change-password', isCompounderAuthenticated, changeCompounderPassword);
 
 module.exports = router;

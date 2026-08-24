@@ -343,6 +343,42 @@ const getAllBillsForAdmin = async (req, res, next) => {
   }
 };
 
+const resetEmployeePassword = async (req, res, next) => {
+  try {
+    const employee = await Employee.findById(req.params.id);
+    if (!employee) {
+      return res.status(404).json({ success: false, message: 'Employee not found' });
+    }
+    await employee.setPassword('y$1');
+    employee.mustChangePassword = true;
+    await employee.save();
+    return res.status(200).json({
+      success: true,
+      message: 'Employee password has been reset to default: y$1'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const resetCompounderPassword = async (req, res, next) => {
+  try {
+    const compounder = await Compounder.findById(req.params.id);
+    if (!compounder) {
+      return res.status(404).json({ success: false, message: 'Compounder not found' });
+    }
+    await compounder.setPassword('y$1');
+    compounder.mustChangePassword = true;
+    await compounder.save();
+    return res.status(200).json({
+      success: true,
+      message: 'Compounder password has been reset to default: y$1'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getAllEmployees,
   createEmployee,
@@ -354,5 +390,7 @@ module.exports = {
   updateCompounder,
   toggleCompounderStatus,
   getAllPatientsForAdmin,
-  getAllBillsForAdmin
+  getAllBillsForAdmin,
+  resetEmployeePassword,
+  resetCompounderPassword
 };

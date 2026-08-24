@@ -413,6 +413,10 @@ export const employeesApi = {
   getHistory: async (config?: AxiosRequestConfig) => {
     const response = await api.get('/api/employees/attendance/history', config);
     return response.data;
+  },
+  changePassword: async (data: { newPassword: string }) => {
+    const response = await api.post('/api/employees/change-password', data);
+    return response.data;
   }
 };
 
@@ -480,6 +484,10 @@ export const compoundersApi = {
     const blob = new Blob([response.data], { type: 'application/pdf' });
     const url = window.URL.createObjectURL(blob);
     window.open(url, '_blank');
+  },
+  changePassword: async (data: { newPassword: string }) => {
+    const response = await api.post('/api/compounders/change-password', data);
+    return response.data;
   }
 };
 
@@ -527,6 +535,14 @@ export const adminManagementApi = {
   },
   getBills: async (params?: { search?: string }) => {
     const response = await api.get('/admin/bills', { params });
+    return response.data;
+  },
+  resetEmployeePassword: async (id: string) => {
+    const response = await api.post(`/admin/employees/${id}/reset-password`);
+    return response.data;
+  },
+  resetCompounderPassword: async (id: string) => {
+    const response = await api.post(`/admin/compounders/${id}/reset-password`);
     return response.data;
   }
 };

@@ -8,7 +8,8 @@ const {
   checkEmployeeAuth,
   checkIn,
   checkOut,
-  getAttendanceHistory
+  getAttendanceHistory,
+  changeEmployeePassword
 } = require('../controllers/employeeController');
 
 // Employee Login
@@ -48,5 +49,8 @@ router.get('/current-employee', checkEmployeeAuth);
 router.post('/attendance/check-in', isEmployeeAuthenticated, checkIn);
 router.post('/attendance/check-out', isEmployeeAuthenticated, checkOut);
 router.get('/attendance/history', isEmployeeAuthenticated, getAttendanceHistory);
+
+// Password Change
+router.post('/change-password', isEmployeeAuthenticated, changeEmployeePassword);
 
 module.exports = router;

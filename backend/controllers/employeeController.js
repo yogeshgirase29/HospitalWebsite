@@ -20,7 +20,8 @@ const loginEmployee = (req, res) => {
       firstName: req.user.firstName,
       lastName: req.user.lastName,
       email: req.user.email,
-      designation: req.user.designation
+      designation: req.user.designation,
+      mustChangePassword: req.user.mustChangePassword
     }
   });
 };
@@ -50,7 +51,8 @@ const checkEmployeeAuth = async (req, res) => {
         firstName: req.user.firstName,
         lastName: req.user.lastName,
         email: req.user.email,
-        designation: req.user.designation
+        designation: req.user.designation,
+        mustChangePassword: req.user.mustChangePassword
       }
     });
   }
@@ -73,7 +75,8 @@ const checkEmployeeAuth = async (req, res) => {
               firstName: employee.firstName,
               lastName: employee.lastName,
               email: employee.email,
-              designation: employee.designation
+              designation: employee.designation,
+              mustChangePassword: employee.mustChangePassword
             }
           });
         }
@@ -197,11 +200,37 @@ const getAttendanceHistory = async (req, res, next) => {
   }
 };
 
+const changeEmployeePassword = async (req, res, next) => {
+  try {
+    const { newPassword } = req.body;
+    if (!newPassword || newPassword.trim() === '') {
+      return res.status(400).json({ success: false, message: 'New password is required. / नवीन संकेतशब्द आवश्यक आहे.' });
+    }
+    
+    const employee = await Employee.findById(req.user._id);
+    if (!employee) {
+      return res.status(404).json({ success: false, message: 'Employee not found.' });
+    }
+    
+    await employee.setPassword(newPassword);
+    employee.mustChangePassword = false;
+    await employee.save();
+    
+    return res.status(200).json({
+      success: true,
+      message: 'Password updated successfully / पासवर्ड यशस्वीरित्या बदलला गेला.'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   loginEmployee,
   logoutEmployee,
   checkEmployeeAuth,
   checkIn,
   checkOut,
-  getAttendanceHistory
+  getAttendanceHistory,
+  changeEmployeePassword
 };

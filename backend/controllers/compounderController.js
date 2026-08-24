@@ -23,7 +23,8 @@ const loginCompounder = (req, res) => {
       compounderId: req.user.compounderId,
       firstName: req.user.firstName,
       lastName: req.user.lastName,
-      email: req.user.email
+      email: req.user.email,
+      mustChangePassword: req.user.mustChangePassword
     }
   });
 };
@@ -52,7 +53,8 @@ const checkCompounderAuth = async (req, res) => {
         compounderId: req.user.compounderId,
         firstName: req.user.firstName,
         lastName: req.user.lastName,
-        email: req.user.email
+        email: req.user.email,
+        mustChangePassword: req.user.mustChangePassword
       }
     });
   }
@@ -73,7 +75,8 @@ const checkCompounderAuth = async (req, res) => {
               compounderId: compounder.compounderId,
               firstName: compounder.firstName,
               lastName: compounder.lastName,
-              email: compounder.email
+              email: compounder.email,
+              mustChangePassword: compounder.mustChangePassword
             }
           });
         }
@@ -486,6 +489,31 @@ const getBillPdf = async (req, res, next) => {
   }
 };
 
+const changeCompounderPassword = async (req, res, next) => {
+  try {
+    const { newPassword } = req.body;
+    if (!newPassword || newPassword.trim() === '') {
+      return res.status(400).json({ success: false, message: 'New password is required. / नवीन संकेतशब्द आवश्यक आहे.' });
+    }
+    
+    const compounder = await Compounder.findById(req.user._id);
+    if (!compounder) {
+      return res.status(404).json({ success: false, message: 'Compounder not found.' });
+    }
+    
+    await compounder.setPassword(newPassword);
+    compounder.mustChangePassword = false;
+    await compounder.save();
+    
+    return res.status(200).json({
+      success: true,
+      message: 'Password updated successfully / पासवर्ड यशस्वीरित्या बदलला गेला.'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   loginCompounder,
   logoutCompounder,
@@ -497,5 +525,6 @@ module.exports = {
   generateBill,
   getBills,
   getBillById,
-  getBillPdf
+  getBillPdf,
+  changeCompounderPassword
 };
