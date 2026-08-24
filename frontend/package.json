@@ -12,7 +12,6 @@
   "dependencies": {
     "axios": "^1.17.0",
     "framer-motion": "^12.40.0",
-    "hospital-mern": "file:..",
     "lucide-react": "^1.17.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
