@@ -64,7 +64,7 @@ export const AdminBilling: React.FC = () => {
       <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
         {loading && bills.length === 0 ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
-            <Loader2 className="animate-spin text-sky-600" size={32} />
+            <Loader2 className="spin-animation" size={32} style={{ color: 'var(--med-blue)' }} />
           </div>
         ) : bills.length === 0 ? (
           <div style={{ padding: '40px 0', textAlign: 'center', color: '#94a3b8' }}>

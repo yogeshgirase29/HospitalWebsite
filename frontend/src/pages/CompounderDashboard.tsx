@@ -294,8 +294,8 @@ export const CompounderDashboard: React.FC = () => {
         background: '#f8fafc',
         fontFamily: "'Inter', sans-serif"
       }}>
-        <Loader2 className="animate-spin text-sky-600" size={40} style={{ animation: 'spin 1s linear infinite' }} />
-        <p style={{ marginTop: '16px', color: '#64748b', fontSize: '0.95rem', fontWeight: 600 }}>
+        <Loader2 className="spin-animation" size={40} style={{ color: 'var(--med-blue)' }} />
+        <p style={{ marginTop: '16px', color: 'var(--text-secondary)', fontSize: '0.95rem', fontWeight: 600 }}>
           Loading clinic desk portal...
         </p>
       </div>
@@ -734,7 +734,7 @@ export const CompounderDashboard: React.FC = () => {
                       marginTop: '8px'
                     }}
                   >
-                    {submitting ? <Loader2 className="animate-spin" size={18} /> : <Plus size={16} />}
+                    {submitting ? <Loader2 className="spin-animation" size={18} /> : <Plus size={16} />}
                     Register Patient
                   </button>
                 </form>
@@ -1328,7 +1328,7 @@ export const CompounderDashboard: React.FC = () => {
                     gap: '6px'
                   }}
                 >
-                  {submitting && <Loader2 className="animate-spin" size={14} />}
+                  {submitting && <Loader2 className="spin-animation" size={14} />}
                   Generate Bill & Complete Book
                 </button>
               </div>

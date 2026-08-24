@@ -242,7 +242,7 @@ export const AdminCompounders: React.FC = () => {
       }}>
         {loading && compounders.length === 0 ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}>
-            <Loader2 className="animate-spin" size={24} style={{ color: '#0284c7' }} />
+            <Loader2 className="spin-animation" size={24} style={{ color: 'var(--med-blue)' }} />
           </div>
         ) : compounders.length === 0 ? (
           <div style={{ padding: '40px', textAlign: 'center', color: '#64748b', fontSize: '0.9rem' }}>
@@ -342,26 +342,11 @@ export const AdminCompounders: React.FC = () => {
 
       {/* CREATE/EDIT DIALOG */}
       {isOpen && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          background: 'rgba(15, 23, 42, 0.4)',
-          backdropFilter: 'blur(6px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 900
-        }}>
-          <div style={{
-            background: 'white',
-            borderRadius: '20px',
+        <div className="modal-overlay">
+          <div className="modal-content glass-panel-blue" style={{
             width: '100%',
             maxWidth: '500px',
             padding: '28px',
-            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)',
             boxSizing: 'border-box'
           }}>
             <h3 style={{ margin: '0 0 20px 0', fontSize: '1.1rem', fontWeight: 800, color: '#0f172a' }}>
@@ -443,14 +428,9 @@ export const AdminCompounders: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
+                  className="btn btn-secondary"
                   style={{
-                    background: '#f1f5f9',
-                    color: '#475569',
-                    border: 'none',
-                    borderRadius: '8px',
                     padding: '8px 16px',
-                    fontWeight: 700,
-                    cursor: 'pointer',
                     fontSize: '0.8rem'
                   }}
                 >
@@ -459,21 +439,16 @@ export const AdminCompounders: React.FC = () => {
                 <button
                   type="submit"
                   disabled={submitting}
+                  className="btn btn-primary"
                   style={{
-                    background: 'var(--gradient-primary, linear-gradient(135deg, #0284c7 0%, #0369a1 100%))',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '8px',
                     padding: '8px 18px',
-                    fontWeight: 700,
-                    cursor: 'pointer',
                     fontSize: '0.8rem',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px'
                   }}
                 >
-                  {submitting && <Loader2 className="animate-spin" size={14} />}
+                  {submitting && <Loader2 className="spin-animation" size={14} />}
                   Save Compounder
                 </button>
               </div>

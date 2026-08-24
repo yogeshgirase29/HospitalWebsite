@@ -178,8 +178,8 @@ export const EmployeeDashboard: React.FC = () => {
         justifyContent: 'center',
         background: '#f8fafc'
       }}>
-        <Loader2 className="animate-spin text-sky-600 animate-spin-slow" size={40} style={{ color: '#0284c7' }} />
-        <p style={{ marginTop: '16px', color: '#64748b', fontSize: '0.95rem', fontWeight: 600 }}>
+        <Loader2 className="spin-animation" size={40} style={{ color: 'var(--med-blue)' }} />
+        <p style={{ marginTop: '16px', color: 'var(--text-secondary)', fontSize: '0.95rem', fontWeight: 600 }}>
           Loading your attendance panel...
         </p>
       </div>
@@ -494,7 +494,7 @@ export const EmployeeDashboard: React.FC = () => {
                   boxShadow: (todayRecord && todayRecord.checkIn) ? 'none' : '0 4px 10px rgba(16, 185, 129, 0.2)'
                 }}
               >
-                {submitting ? <Loader2 className="animate-spin" size={16} /> : <Play size={14} />}
+                {submitting ? <Loader2 className="spin-animation" size={16} /> : <Play size={14} />}
                 Check In
               </button>
 
@@ -518,7 +518,7 @@ export const EmployeeDashboard: React.FC = () => {
                   boxShadow: (!todayRecord || (todayRecord && todayRecord.checkOut)) ? 'none' : '0 4px 10px rgba(239, 68, 68, 0.2)'
                 }}
               >
-                {submitting ? <Loader2 className="animate-spin" size={16} /> : <Square size={12} />}
+                {submitting ? <Loader2 className="spin-animation" size={16} /> : <Square size={12} />}
                 Check Out
               </button>
             </div>
