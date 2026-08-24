@@ -207,7 +207,7 @@ const employeeJoiSchema = Joi.object({
   }),
   designation: Joi.string().required().messages({ 'string.empty': 'Designation is required' }),
   status: Joi.string().valid('Active', 'Inactive').default('Active'),
-  password: Joi.string().min(6).optional()
+  password: Joi.string().min(6).allow('').optional()
 });
 
 const compounderJoiSchema = Joi.object({
@@ -223,7 +223,7 @@ const compounderJoiSchema = Joi.object({
     'string.pattern.base': 'Please enter a valid 10-digit mobile number'
   }),
   status: Joi.string().valid('Active', 'Inactive').default('Active'),
-  password: Joi.string().min(6).optional()
+  password: Joi.string().min(6).allow('').optional()
 });
 
 const patientJoiSchema = Joi.object({
