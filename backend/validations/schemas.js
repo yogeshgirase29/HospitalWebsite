@@ -194,7 +194,7 @@ const statsJoiSchema = Joi.object({
 });
 
 const employeeJoiSchema = Joi.object({
-  employeeId: Joi.string().required().messages({ 'string.empty': 'Employee ID is required' }),
+  employeeId: Joi.string().allow('').optional(),
   firstName: Joi.string().required().messages({ 'string.empty': 'First name is required' }),
   lastName: Joi.string().required().messages({ 'string.empty': 'Last name is required' }),
   email: Joi.string().email().required().messages({
@@ -211,7 +211,7 @@ const employeeJoiSchema = Joi.object({
 });
 
 const compounderJoiSchema = Joi.object({
-  compounderId: Joi.string().required().messages({ 'string.empty': 'Compounder ID is required' }),
+  compounderId: Joi.string().allow('').optional(),
   firstName: Joi.string().required().messages({ 'string.empty': 'First name is required' }),
   lastName: Joi.string().required().messages({ 'string.empty': 'Last name is required' }),
   email: Joi.string().email().required().messages({

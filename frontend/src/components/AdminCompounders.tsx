@@ -7,10 +7,10 @@ export const AdminCompounders: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [search, setSearch] = useState('');
-  
-  // Modal states
   const [isOpen, setIsOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [resetConfirm, setResetConfirm] = useState<{ isOpen: boolean; id: string }>({ isOpen: false, id: '' });
+  const [resetLoading, setResetLoading] = useState(false);
   const [form, setForm] = useState({
     compounderId: '',
     firstName: '',
@@ -88,11 +88,7 @@ export const AdminCompounders: React.FC = () => {
           fetchCompounders();
         }
       } else {
-        // Create
-        if (!form.password) {
-          showNotification('error', 'Password is required for new compounders');
-          return;
-        }
+        // Create (Password is set to y$1 by default in backend)
         const res = await adminManagementApi.createCompounder(form);
         if (res.success) {
           showNotification('success', 'Compounder created successfully');
@@ -121,12 +117,15 @@ export const AdminCompounders: React.FC = () => {
     }
   };
 
-  const handleResetPassword = async (id: string) => {
-    if (!window.confirm('Are you sure you want to reset this compounder\'s password to the default "y$1"?')) {
-      return;
-    }
+  const handleOpenResetConfirm = (id: string) => {
+    setResetConfirm({ isOpen: true, id });
+  };
+
+  const handleResetPassword = async () => {
+    const id = resetConfirm.id;
+    if (!id) return;
     try {
-      setLoading(true);
+      setResetLoading(true);
       const res = await adminManagementApi.resetCompounderPassword(id);
       if (res.success) {
         showNotification('success', 'Compounder password reset successfully to default: y$1');
@@ -137,7 +136,8 @@ export const AdminCompounders: React.FC = () => {
       console.error(e);
       showNotification('error', e.response?.data?.message || 'Failed to reset password');
     } finally {
-      setLoading(false);
+      setResetLoading(false);
+      setResetConfirm({ isOpen: false, id: '' });
     }
   };
 
@@ -298,7 +298,7 @@ export const AdminCompounders: React.FC = () => {
                         <Edit2 size={12} />
                       </button>
                       <button
-                        onClick={() => handleResetPassword(comp._id)}
+                        onClick={() => handleOpenResetConfirm(comp._id)}
                         style={{
                           background: 'none',
                           border: '1px solid #cbd5e1',
@@ -358,11 +358,10 @@ export const AdminCompounders: React.FC = () => {
                   <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#475569' }}>COMPOUNDER ID</label>
                   <input
                     type="text"
-                    required
-                    disabled={!!editingId}
-                    value={form.compounderId}
-                    onChange={e => setForm(prev => ({ ...prev, compounderId: e.target.value }))}
-                    style={{ padding: '8px 10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '0.85rem' }}
+                    disabled={true}
+                    placeholder="Auto-Generated / स्वयंचलित"
+                    value={editingId ? form.compounderId : ''}
+                    style={{ padding: '8px 10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '0.85rem', backgroundColor: '#f1f5f9' }}
                   />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -411,19 +410,6 @@ export const AdminCompounders: React.FC = () => {
                 />
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#475569' }}>
-                  PASSWORD {editingId && '(Leave blank to keep current)'}
-                </label>
-                <input
-                  type="password"
-                  required={!editingId}
-                  value={form.password}
-                  onChange={e => setForm(prev => ({ ...prev, password: e.target.value }))}
-                  style={{ padding: '8px 10px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '0.85rem' }}
-                />
-              </div>
-
               <div style={{ display: 'flex', gap: '14px', justifyContent: 'end', marginTop: '14px' }}>
                 <button
                   type="button"
@@ -453,6 +439,84 @@ export const AdminCompounders: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Reset Password Confirmation Popup Modal */}
+      {resetConfirm.isOpen && (
+        <div className="modal-overlay" style={{ zIndex: 9999 }}>
+          <div
+            style={{
+              width: '100%',
+              maxWidth: '420px',
+              background: 'white',
+              borderRadius: '16px',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+              overflow: 'hidden',
+              border: '1px solid #e2e8f0',
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            {/* Header */}
+            <div style={{
+              background: 'var(--gradient-primary)',
+              color: 'white',
+              padding: '20px 24px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px'
+            }}>
+              <div style={{ background: 'rgba(255, 255, 255, 0.2)', padding: '6px', borderRadius: '8px', display: 'flex' }}>
+                <ShieldAlert size={20} color="white" />
+              </div>
+              <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: 'white', letterSpacing: '-0.3px' }}>
+                Reset Staff Password
+              </h3>
+            </div>
+            
+            {/* Message */}
+            <div style={{ padding: '24px', fontSize: '0.92rem', color: '#475569', lineHeight: 1.6 }}>
+              Are you sure you want to reset this compounder's password to the default "y$1"? The user will be prompted to choose a new password upon their next login.
+            </div>
+            
+            {/* Actions Footer */}
+            <div style={{
+              padding: '16px 24px',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: '12px',
+              background: '#f8fafc',
+              borderTop: '1px solid #e2e8f0'
+            }}>
+              <button
+                onClick={() => setResetConfirm({ isOpen: false, id: '' })}
+                disabled={resetLoading}
+                className="btn btn-secondary"
+                style={{ padding: '10px 20px', borderRadius: '8px', fontSize: '0.88rem', fontWeight: 600 }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleResetPassword}
+                disabled={resetLoading}
+                className="btn btn-primary"
+                style={{
+                  padding: '10px 20px',
+                  borderRadius: '8px',
+                  fontSize: '0.88rem',
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}
+              >
+                {resetLoading && <Loader2 size={16} className="spin-animation" />}
+                <span>Confirm Reset</span>
+              </button>
+            </div>
           </div>
         </div>
       )}

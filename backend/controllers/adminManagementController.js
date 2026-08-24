@@ -5,6 +5,42 @@ const Patient = require('../models/Patient');
 const Bill = require('../models/Bill');
 const { employeeJoiSchema, compounderJoiSchema } = require('../validations/schemas');
 
+// Helper to auto-generate Employee ID starting at EMP101 and increment by 1
+const getNextEmployeeId = async () => {
+  try {
+    const employees = await Employee.find({ employeeId: /^EMP\d+$/ }, { employeeId: 1 });
+    let maxNum = 100;
+    for (const emp of employees) {
+      const num = parseInt(emp.employeeId.replace('EMP', ''), 10);
+      if (!isNaN(num) && num > maxNum) {
+        maxNum = num;
+      }
+    }
+    return `EMP${maxNum + 1}`;
+  } catch (err) {
+    console.error('Error auto-generating Employee ID:', err);
+    return 'EMP101';
+  }
+};
+
+// Helper to auto-generate Compounder ID starting at COM101 and increment by 1
+const getNextCompounderId = async () => {
+  try {
+    const compounders = await Compounder.find({ compounderId: /^COM\d+$/ }, { compounderId: 1 });
+    let maxNum = 100;
+    for (const comp of compounders) {
+      const num = parseInt(comp.compounderId.replace('COM', ''), 10);
+      if (!isNaN(num) && num > maxNum) {
+        maxNum = num;
+      }
+    }
+    return `COM${maxNum + 1}`;
+  } catch (err) {
+    console.error('Error auto-generating Compounder ID:', err);
+    return 'COM101';
+  }
+};
+
 // Employee Management
 const getAllEmployees = async (req, res, next) => {
   try {
@@ -32,10 +68,15 @@ const createEmployee = async (req, res, next) => {
       return res.status(400).json({ success: false, message: error.details[0].message });
     }
 
-    const { employeeId, firstName, lastName, email, mobile, designation, status, password } = req.body;
-    if (!password) {
-      return res.status(400).json({ success: false, message: 'Password is required to create employee' });
+    let { employeeId, firstName, lastName, email, mobile, designation, status, password } = req.body;
+    
+    // Auto-generate employeeId if not provided or empty
+    if (!employeeId || employeeId.trim() === '') {
+      employeeId = await getNextEmployeeId();
     }
+    
+    // Set default password to y$1 if not provided
+    const finalPassword = password || 'y$1';
 
     const existingEmployee = await Employee.findOne({ $or: [{ employeeId }, { email }] });
     if (existingEmployee) {
@@ -52,7 +93,7 @@ const createEmployee = async (req, res, next) => {
       status: status || 'Active'
     });
 
-    await Employee.register(newEmployee, password);
+    await Employee.register(newEmployee, finalPassword);
 
     return res.status(201).json({
       success: true,
@@ -211,10 +252,15 @@ const createCompounder = async (req, res, next) => {
       return res.status(400).json({ success: false, message: error.details[0].message });
     }
 
-    const { compounderId, firstName, lastName, email, mobile, status, password } = req.body;
-    if (!password) {
-      return res.status(400).json({ success: false, message: 'Password is required to create compounder' });
+    let { compounderId, firstName, lastName, email, mobile, status, password } = req.body;
+    
+    // Auto-generate compounderId if not provided or empty
+    if (!compounderId || compounderId.trim() === '') {
+      compounderId = await getNextCompounderId();
     }
+    
+    // Set default password to y$1 if not provided
+    const finalPassword = password || 'y$1';
 
     const existingCompounder = await Compounder.findOne({ $or: [{ compounderId }, { email }] });
     if (existingCompounder) {
@@ -230,7 +276,7 @@ const createCompounder = async (req, res, next) => {
       status: status || 'Active'
     });
 
-    await Compounder.register(newCompounder, password);
+    await Compounder.register(newCompounder, finalPassword);
 
     return res.status(201).json({
       success: true,
